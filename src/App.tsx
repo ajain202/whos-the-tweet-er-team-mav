@@ -1,7 +1,8 @@
-import './App.css';
+import './app.css';
+import About from './components/about';
 
 function App() {
-  return <div className="App">App component</div>;
+  return <About />;
 }
 
 export default App;
