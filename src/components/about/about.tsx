@@ -1,4 +1,4 @@
-import architecture from '../assets/images/cs484-white-bg.jpg';
+import architecture from '../../assets/images/cs484-white-bg.jpg';
 
 function About() {
   return (
