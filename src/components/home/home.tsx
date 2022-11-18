@@ -24,8 +24,12 @@ function Home({ oAuthCredential }: Props) {
             },
           })
           .then(({ data }) => {
-            localStorage.setItem('follower_tweets', JSON.stringify(data));
-            setFollowerTweets(data);
+            if (data.length > 0) {
+              localStorage.setItem('follower_tweets', JSON.stringify(data));
+              setFollowerTweets(data);
+            } else {
+              alert("You don't follow anyone");
+            }
           })
           .catch((error) => {
             console.log(error);

@@ -11,11 +11,13 @@ const handler: Handler = async (event, _context) => {
       accessSecret: event.queryStringParameters?.accessSecret || '',
     });
     const { data: user } = await client.v2.me();
-    const { data: followers } = await client.v2.followers(user.id);
+    const { data: followers } = await client.v2.following(user.id, { max_results: 2 });
     const followerTweets: Array<FollowerTweets> = [];
-    for (const follower of followers) {
-      const { data: tweets } = await client.v2.get(`users/${follower.id}/tweets`);
-      followerTweets.push({ follower, tweets });
+    if (Array.isArray(followers) && followers.length > 0) {
+      for (const follower of followers) {
+        const { data: tweets } = await client.v2.get(`users/${follower.id}/tweets`);
+        followerTweets.push({ follower, tweets });
+      }
     }
     return {
       statusCode: 200,
