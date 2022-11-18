@@ -1,7 +1,9 @@
-import React, { MouseEvent, useEffect, useState } from 'react';
+import { signInWithRedirect, signOut, TwitterAuthProvider, User } from 'firebase/auth';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { BrandTwitter, Icon, Menu2, X } from 'tabler-icons-react';
 import logo from '../../assets/images/logo.png';
+import firebase from '../../firebase-client';
 import Button from '../resusable-controls/button';
 
 interface NavOptions {
@@ -11,13 +13,32 @@ interface NavOptions {
   active: boolean;
 }
 
-function Navigation() {
+interface Props {
+  session: User | undefined;
+  setSession: React.Dispatch<React.SetStateAction<User | undefined>>;
+}
+function Navigation({ session, setSession }: Props) {
   const [show, setShow] = useState<boolean>(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  // const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [navOptions, setNavOptions] = useState<NavOptions[]>([]);
   const navigate = useNavigate();
+  const provider = new TwitterAuthProvider();
+  const auth = firebase;
+  auth.languageCode = 'it';
+
   const authHandler = (e: React.MouseEvent<HTMLElement>) => {
-    setIsLoggedIn(!isLoggedIn);
+    if (session) {
+      signOut(auth)
+        .then(() => {
+          setSession(undefined);
+          sessionStorage.clear();
+        })
+        .catch((error) => {
+          console.log('error', error);
+        });
+    } else {
+      signInWithRedirect(auth, provider);
+    }
   };
 
   useEffect(() => {
@@ -73,7 +94,7 @@ function Navigation() {
               </div>
               <div className="flex items-center">
                 <Button
-                  label={isLoggedIn ? 'Logout' : 'Login'}
+                  label={session ? 'Logout' : 'Login'}
                   type="button"
                   onClick={(e) => authHandler(e)}
                 />
@@ -151,7 +172,7 @@ function Navigation() {
                   <div className="border-t border-gray-300">
                     <div className="w-full flex items-center justify-between pt-1">
                       <Button
-                        label={isLoggedIn ? 'Logout' : 'Login'}
+                        label={session ? 'Logout' : 'Login'}
                         type="button"
                         onClick={(e) => authHandler(e)}
                       />
