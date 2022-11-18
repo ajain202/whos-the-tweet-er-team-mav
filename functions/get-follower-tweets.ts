@@ -1,22 +1,14 @@
 import { Handler } from '@netlify/functions';
 import { TwitterApi } from 'twitter-api-v2';
+import { FollowerTweets } from '../src/models/follower-tweets';
 
-interface FollowerTweets {
-  follower: Object;
-  tweets: Array<Object>;
-}
-
-const handler: Handler = async (event, context) => {
+const handler: Handler = async (event, _context) => {
   try {
     const client = new TwitterApi({
       appKey: process.env.TWITTER_API_KEY || '',
       appSecret: process.env.TWITTER_API_SECRET || '',
-      accessToken:
-        process.env.TWITTER_ACCESS_TOKEN || event.queryStringParameters?.accessToken || '',
-      accessSecret:
-        process.env.TWITTER_ACCESS_TOKEN_SECRET ||
-        event.queryStringParameters?.accessTokenSecret ||
-        '',
+      accessToken: event.queryStringParameters?.accessToken || '',
+      accessSecret: event.queryStringParameters?.accessSecret || '',
     });
     const { data: user } = await client.v2.me();
     const { data: followers } = await client.v2.followers(user.id);

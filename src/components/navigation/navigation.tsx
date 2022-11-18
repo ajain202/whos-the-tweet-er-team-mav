@@ -1,9 +1,15 @@
-import { signInWithRedirect, signOut, TwitterAuthProvider, User } from 'firebase/auth';
+import {
+  OAuthCredential,
+  signInWithRedirect,
+  signOut,
+  TwitterAuthProvider,
+  User,
+} from 'firebase/auth';
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { BrandTwitter, Icon, Menu2, X } from 'tabler-icons-react';
 import logo from '../../assets/images/logo.png';
-import firebase from '../../firebase-client';
+import firebaseAuth from '../../firebase/firebase-client';
 import Button from '../resusable-controls/button';
 
 interface NavOptions {
@@ -14,30 +20,31 @@ interface NavOptions {
 }
 
 interface Props {
-  session: User | undefined;
-  setSession: React.Dispatch<React.SetStateAction<User | undefined>>;
+  session: User | null;
+  setSession: React.Dispatch<React.SetStateAction<User | null>>;
+  setOAuthCredential: React.Dispatch<React.SetStateAction<OAuthCredential | null>>;
 }
-function Navigation({ session, setSession }: Props) {
-  const [show, setShow] = useState<boolean>(false);
-  // const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [navOptions, setNavOptions] = useState<NavOptions[]>([]);
-  const navigate = useNavigate();
-  const provider = new TwitterAuthProvider();
-  const auth = firebase;
-  auth.languageCode = 'it';
 
-  const authHandler = (e: React.MouseEvent<HTMLElement>) => {
+function Navigation({ session, setSession, setOAuthCredential }: Props) {
+  const [navOptions, setNavOptions] = useState<Array<NavOptions>>([]);
+  const [show, setShow] = useState<boolean>(false);
+  const navigate = useNavigate();
+
+  const authHandler = () => {
     if (session) {
-      signOut(auth)
+      signOut(firebaseAuth)
         .then(() => {
-          setSession(undefined);
-          sessionStorage.clear();
+          setSession(null);
+          setOAuthCredential(null);
+          localStorage.clear();
+          window.location.href = '/';
         })
         .catch((error) => {
           console.log('error', error);
         });
     } else {
-      signInWithRedirect(auth, provider);
+      const provider = new TwitterAuthProvider();
+      signInWithRedirect(firebaseAuth, provider);
     }
   };
 
@@ -93,11 +100,7 @@ function Navigation({ session, setSession }: Props) {
                 ))}
               </div>
               <div className="flex items-center">
-                <Button
-                  label={session ? 'Logout' : 'Login'}
-                  type="button"
-                  onClick={(e) => authHandler(e)}
-                />
+                <Button label={session ? 'Logout' : 'Login'} type="button" onClick={authHandler} />
               </div>
             </div>
           </div>
@@ -174,7 +177,7 @@ function Navigation({ session, setSession }: Props) {
                       <Button
                         label={session ? 'Logout' : 'Login'}
                         type="button"
-                        onClick={(e) => authHandler(e)}
+                        onClick={authHandler}
                       />
                     </div>
                   </div>
