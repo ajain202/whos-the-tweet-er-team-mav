@@ -1,1 +1,4 @@
 build
+functions
+postcss.config.js
+tailwind.config.js

@@ -1,4 +1,4 @@
-import architecture from '../assets/images/cs484-white-bg.jpg';
+import architecture from '../../assets/images/cs484.jpg';
 
 function About() {
   return (
@@ -17,7 +17,7 @@ function About() {
       </div>
 
       <img src={architecture} alt="arch" style={{ width: '100%', border: '3px solid #05395c' }} />
-      <div>
+      <div className="mt-4">
         <h2 style={{ textDecorationLine: 'underline', color: '#05395c', alignItems: 'center' }}>
           Minimum Viable Product Description
         </h2>
@@ -26,6 +26,16 @@ function About() {
         use the list returned to chose two random followers and display their tweets. We are using
         Supabase database for backend and React for frontend. We will use Github for version control
         along with netlify for CICD and hosting.
+      </div>
+      <div className="mt-5">
+        <h2 style={{ textDecorationLine: 'underline', color: '#05395c', alignItems: 'center' }}>
+          Current Functionality
+        </h2>
+        1. OAuth with Twitter using Firebase.
+        <br />
+        2. Fetching two most recent users you follow using Twitter API.
+        <br />
+        3. Fetching their Tweets using Twitter API.
       </div>
     </div>
   );

@@ -10,7 +10,12 @@ final-project-proposal-team-mav created by GitHub Classroom
 2. Aakash Jain (UIN: 669082669)
 3. Mayur Mule (UIN: 677596520)
 
-### What does your application?
+## Current Functionality
+1. OAuth with Twitter using Firebase.
+2. Fetching two most recent users you follow using Twitter API.
+3. Fetching their Tweets using Twitter API.
+
+### What does your application do?
 Our application is called 'The Tweet Game', its a simple concept based on the fact that the followers on social media are getting out of hand and we thought
 it would be fun to test the user's knowledge. The user would be presented with a tweet and would have to guess the follower it belongs to.
 There are other concepts involved such as similarity coefficient to decide the difficulty.
