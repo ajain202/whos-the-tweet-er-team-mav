@@ -2,6 +2,7 @@ import axios from 'axios';
 import { OAuthCredential } from 'firebase/auth';
 import { useEffect, useState } from 'react';
 import { FollowerTweets } from '../../models/follower-tweets';
+import Tweet from '../tweet/tweet';
 
 interface Props {
   oAuthCredential: OAuthCredential | null;
@@ -40,6 +41,7 @@ function Home({ oAuthCredential }: Props) {
 
   return (
     <div className="p-5">
+      <Tweet />
       {followerTweets.length > 0 && (
         <table className="w-full border text-center">
           <thead className="border-b">
