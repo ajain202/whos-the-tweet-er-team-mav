@@ -1,77 +1,73 @@
 import axios from 'axios';
 import { OAuthCredential } from 'firebase/auth';
-import { useEffect, useState } from 'react';
-import { FollowerTweets } from '../../models/follower-tweets';
-import Tweet from '../tweet/tweet';
+import { useState } from 'react';
+import { Following } from '../../models/models';
+import GameCard from '../game-screen/game-screen';
+import Button from '../resusable-controls/button';
+import FollowingList from './following-list';
 
 interface Props {
   oAuthCredential: OAuthCredential | null;
 }
 
 function Home({ oAuthCredential }: Props) {
-  const [followerTweets, setFollowerTweets] = useState<Array<FollowerTweets>>([]);
+  const [stage, setStage] = useState<'start' | 'following' | 'ingame'>('start');
+  const [following, setFollowing] = useState<Array<Following>>([]);
 
-  useEffect(() => {
+  const onStartHandler = () => {
     if (oAuthCredential?.accessToken && oAuthCredential.secret) {
-      const cachedFollowerTweets = JSON.parse(localStorage.getItem('follower_tweets') || '[]');
-      if (cachedFollowerTweets.length > 0) {
-        setFollowerTweets(cachedFollowerTweets);
-      } else {
-        axios
-          .get('/.netlify/functions/get-follower-tweets', {
-            params: {
-              accessToken: oAuthCredential.accessToken,
-              accessSecret: oAuthCredential.secret,
-            },
-          })
-          .then(({ data }) => {
-            if (data.length > 0) {
-              localStorage.setItem('follower_tweets', JSON.stringify(data));
-              setFollowerTweets(data);
-            } else {
-              alert("You don't follow anyone");
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-      }
+      axios
+        .get('/.netlify/functions/get-following', {
+          params: {
+            accessToken: oAuthCredential.accessToken,
+            accessSecret: oAuthCredential.secret,
+          },
+        })
+        .then(({ data }) => {
+          if (Array.isArray(data) && data.length > 0) {
+            setStage('following');
+            setFollowing(data);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     }
-  }, [oAuthCredential]);
+  };
+
+  const onFollowingSubmitHandler = () => {
+    if (oAuthCredential?.accessToken && oAuthCredential.secret) {
+      axios
+        .get('/.netlify/functions/get-tweets-for-following', {
+          params: {
+            accessToken: oAuthCredential.accessToken,
+            accessSecret: oAuthCredential.secret,
+            following: following
+              .filter(({ selected }) => !!selected)
+              .map(({ id }) => id)
+              .join(','),
+          },
+        })
+        .then(({ data }) => {
+          if (Array.isArray(data) && data.length > 0) {
+            console.log('data', data);
+            setStage('ingame');
+          }
+        });
+    }
+  };
 
   return (
     <div className="p-5">
-      <Tweet />
-      {followerTweets.length > 0 && (
-        <table className="w-full border text-center">
-          <thead className="border-b">
-            <tr>
-              <th scope="col" className="text-sm font-medium text-gray-900 px-6 py-4 border-r">
-                Follower Name
-              </th>
-              <th scope="col" className="text-sm font-medium text-gray-900 px-6 py-4">
-                Tweets
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {followerTweets.map(({ follower, tweets }) => (
-              <tr key={follower.id} className="border-b">
-                <td className="text-sm text-gray-900 font-light px-6 py-4 border-r">
-                  {follower.name}
-                </td>
-                <td className="text-sm text-gray-900 font-light px-6 py-4">
-                  {tweets.map(({ id, text }) => (
-                    <div key={id} className="border-b">
-                      {text}
-                    </div>
-                  ))}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      {stage === 'start' && <Button label="Start Game" type="button" onClick={onStartHandler} />}
+      {stage === 'following' && (
+        <FollowingList
+          following={following}
+          setFollowing={setFollowing}
+          onFollowingSubmitHandler={onFollowingSubmitHandler}
+        />
       )}
+      {stage === 'ingame' && <GameCard />}
     </div>
   );
 }
