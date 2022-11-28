@@ -17,6 +17,7 @@ const handler: Handler = async (event, _context) => {
     for (const following of followingList) {
       const { data: tweets } = await client.v2.get(`users/${following}/tweets`, {
         max_results: 100,
+        exclude: 'retweets,replies',
       });
       followingTweets.push({ following, tweets });
     }
