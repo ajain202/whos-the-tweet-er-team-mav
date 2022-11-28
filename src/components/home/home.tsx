@@ -1,16 +1,18 @@
 import axios from 'axios';
-import { OAuthCredential } from 'firebase/auth';
+import { OAuthCredential, User } from 'firebase/auth';
 import { useState } from 'react';
 import { Following, FollowingTweets } from '../../models/models';
 import GameScreen from '../game-screen/game-screen';
 import Button from '../resusable-controls/button';
 import FollowingList from './following-list';
+import generateQuestions from '../../utilities/generate-questions';
 
 interface Props {
   oAuthCredential: OAuthCredential | null;
+  session: User | null;
 }
 
-function Home({ oAuthCredential }: Props) {
+function Home({ oAuthCredential, session }: Props) {
   const [stage, setStage] = useState<'start' | 'following' | 'ingame'>('start');
   const [following, setFollowing] = useState<Array<Following>>([]);
 

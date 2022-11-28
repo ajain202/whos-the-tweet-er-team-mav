@@ -9,7 +9,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { BrandTwitter, Icon, Menu2, X } from 'tabler-icons-react';
 import logo from '../../assets/images/logo.png';
-import firebaseAuth from '../../firebase/firebase-client';
+import { firebaseAuth } from '../../firebase/firebase-client';
 import Button from '../resusable-controls/button';
 
 interface NavOptions {
