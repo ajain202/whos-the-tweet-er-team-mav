@@ -14,3 +14,11 @@ export interface FollowingTweets {
   following: string;
   tweets: Array<Tweet>;
 }
+
+export interface Question {
+  tweetId: string;
+  tweet: string;
+  option: Array<string>;
+  answer: string;
+  score: number;
+}
