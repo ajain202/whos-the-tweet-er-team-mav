@@ -11,13 +11,16 @@ interface Props {
 function FollowingList({ following, setFollowing, onFollowingSubmitHandler }: Props) {
   const onFollowingChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFollowing(
-      following.map((f) => (f.id === e.target.id ? { ...f, selected: e.target.checked } : f)),
+      following.map((foll) =>
+        foll.id === e.target.id ? { ...foll, selected: e.target.checked } : foll,
+      ),
     );
   };
 
   return (
     <div>
-      <ul>
+      <p className="font-semibold text-lg">Select users you follow</p>
+      <ul className="my-3">
         {following.map(({ username, id, name, selected }) => (
           <li key={id}>
             <Checkbox
@@ -26,7 +29,6 @@ function FollowingList({ following, setFollowing, onFollowingSubmitHandler }: Pr
               checked={!!selected}
               onChange={onFollowingChangeHandler}
             />
-            {/* {`${name} (@${username})`} */}
           </li>
         ))}
       </ul>

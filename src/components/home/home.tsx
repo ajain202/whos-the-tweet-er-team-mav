@@ -1,8 +1,8 @@
 import axios from 'axios';
 import { OAuthCredential } from 'firebase/auth';
 import { useState } from 'react';
-import { Following } from '../../models/models';
-import GameCard from '../game-screen/game-screen';
+import { Following, FollowingTweets } from '../../models/models';
+import GameScreen from '../game-screen/game-screen';
 import Button from '../resusable-controls/button';
 import FollowingList from './following-list';
 
@@ -14,60 +14,87 @@ function Home({ oAuthCredential }: Props) {
   const [stage, setStage] = useState<'start' | 'following' | 'ingame'>('start');
   const [following, setFollowing] = useState<Array<Following>>([]);
 
-  const onStartHandler = () => {
-    if (oAuthCredential?.accessToken && oAuthCredential.secret) {
-      axios
-        .get('/.netlify/functions/get-following', {
-          params: {
-            accessToken: oAuthCredential.accessToken,
-            accessSecret: oAuthCredential.secret,
+  const onStartHandler = async () => {
+    try {
+      if (oAuthCredential?.accessToken && oAuthCredential.secret) {
+        const { data }: { data: Array<Following> } = await axios.get(
+          '/.netlify/functions/get-following',
+          {
+            params: {
+              accessToken: oAuthCredential.accessToken,
+              accessSecret: oAuthCredential.secret,
+            },
           },
-        })
-        .then(({ data }) => {
-          if (Array.isArray(data) && data.length > 0) {
-            setStage('following');
+        );
+        if (Array.isArray(data)) {
+          if (data.length > 2) {
             setFollowing(data);
+            setStage('following');
+          } else {
+            alert("You won't be able to play the game as you don't follow enough users");
           }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+        } else {
+          alert('Something went wrong, try again in some time');
+        }
+      }
+    } catch (_error) {
+      alert('Something went wrong, try again in some time');
     }
   };
 
-  const onFollowingSubmitHandler = () => {
-    if (oAuthCredential?.accessToken && oAuthCredential.secret) {
-      axios
-        .get('/.netlify/functions/get-tweets-for-following', {
-          params: {
-            accessToken: oAuthCredential.accessToken,
-            accessSecret: oAuthCredential.secret,
-            following: following
-              .filter(({ selected }) => !!selected)
-              .map(({ id }) => id)
-              .join(','),
+  const onFollowingSubmitHandler = async () => {
+    try {
+      const selectedCount = following.filter(({ selected }) => selected).length;
+      if (selectedCount < 2) {
+        alert('At least 2 users are required');
+      } else if (selectedCount > 5) {
+        alert('At most 5 users are allowed');
+      } else if (oAuthCredential?.accessToken && oAuthCredential.secret) {
+        const { data }: { data: FollowingTweets } = await axios.get(
+          '/.netlify/functions/get-tweets-for-following',
+          {
+            params: {
+              accessToken: oAuthCredential.accessToken,
+              accessSecret: oAuthCredential.secret,
+              following: following
+                .filter(({ selected }) => !!selected)
+                .map(({ id }) => id)
+                .join(','),
+            },
           },
-        })
-        .then(({ data }) => {
-          if (Array.isArray(data) && data.length > 0) {
-            console.log('data', data);
-            setStage('ingame');
-          }
-        });
+        );
+        if (Array.isArray(data) && data.length > 0) {
+          console.log('data', data);
+          setStage('ingame');
+        } else {
+          alert('Something went wrong, try again in some time');
+        }
+      }
+    } catch (_error) {
+      alert('Something went wrong, try again in some time');
     }
   };
 
   return (
-    <div className="p-5">
-      {stage === 'start' && <Button label="Start Game" type="button" onClick={onStartHandler} />}
-      {stage === 'following' && (
-        <FollowingList
-          following={following}
-          setFollowing={setFollowing}
-          onFollowingSubmitHandler={onFollowingSubmitHandler}
-        />
-      )}
-      {stage === 'ingame' && <GameCard />}
+    <div className="container mx-auto p-5 xl:px-0 grid grid-cols-1 md:grid-cols-5 gap-8 md:gap-8 md:h-[85vh] max-w-[1200px]">
+      <div className="p-5 md:col-span-3 h-auto border border-blue-500 border-dashed">
+        <div className="flex flex-col items-center">
+          {stage === 'start' && (
+            <Button label="Start Game" type="button" onClick={onStartHandler} />
+          )}
+          {stage === 'following' && (
+            <FollowingList
+              following={following}
+              setFollowing={setFollowing}
+              onFollowingSubmitHandler={onFollowingSubmitHandler}
+            />
+          )}
+          {stage === 'ingame' && <GameScreen />}
+        </div>
+      </div>
+      <div className="p-5 md:col-span-2 h-auto overflow-y-auto custom-scrollbar border border-blue-500 border-dashed">
+        <div className="flex flex-col items-center">Leaderboard</div>
+      </div>
     </div>
   );
 }

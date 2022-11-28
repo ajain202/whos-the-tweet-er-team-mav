@@ -1,7 +1,5 @@
-import React from 'react';
-
-function GameCard() {
-  return <div>GameCard</div>;
+function GameScreen() {
+  return <div>GameScreen</div>;
 }
 
-export default GameCard;
+export default GameScreen;
