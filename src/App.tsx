@@ -11,7 +11,7 @@ import './App.css';
 import About from './components/about/about';
 import Home from './components/home/home';
 import Navigation from './components/navigation/navigation';
-import firebaseAuth from './firebase/firebase-client';
+import { firebaseAuth } from './firebase/firebase-client';
 
 function App() {
   const [session, setSession] = useState<User | null>(null);
@@ -50,7 +50,7 @@ function App() {
         setOAuthCredential={setOAuthCredential}
       />
       <Routes>
-        <Route path="/" element={<Home oAuthCredential={oAuthCredential} />} />
+        <Route path="/" element={<Home oAuthCredential={oAuthCredential} session={session} />} />
         <Route path="/about" element={<About />} />
       </Routes>
     </BrowserRouter>
