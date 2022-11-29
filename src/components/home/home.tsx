@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { OAuthCredential, User } from 'firebase/auth';
 import { useState } from 'react';
-import { Following, FollowingTweets } from '../../models/models';
+import { Following, FollowingTweets, Question } from '../../models/models';
 import GameScreen from '../game-screen/game-screen';
 import Button from '../resusable-controls/button';
 import FollowingList from './following-list';
@@ -15,6 +15,7 @@ interface Props {
 function Home({ oAuthCredential, session }: Props) {
   const [stage, setStage] = useState<'start' | 'following' | 'ingame'>('start');
   const [following, setFollowing] = useState<Array<Following>>([]);
+  const [questions, setQuestions] = useState<Array<Question>>([]);
 
   const onStartHandler = async () => {
     try {
@@ -66,8 +67,13 @@ function Home({ oAuthCredential, session }: Props) {
           },
         );
         if (Array.isArray(data) && data.length > 0) {
-          console.log('data', data);
-          setStage('ingame');
+          const genQuestions = await generateQuestions(data, session);
+          if (genQuestions.length > 0) {
+            setQuestions(genQuestions);
+            setStage('ingame');
+          } else {
+            alert('Select different users');
+          }
         } else {
           alert('Something went wrong, try again in some time');
         }
@@ -75,6 +81,12 @@ function Home({ oAuthCredential, session }: Props) {
     } catch (_error) {
       alert('Something went wrong, try again in some time');
     }
+  };
+
+  const onExitHandler = () => {
+    setStage('start');
+    setFollowing([]);
+    setQuestions([]);
   };
 
   return (
@@ -91,7 +103,9 @@ function Home({ oAuthCredential, session }: Props) {
               onFollowingSubmitHandler={onFollowingSubmitHandler}
             />
           )}
-          {stage === 'ingame' && <GameScreen />}
+          {stage === 'ingame' && questions.length > 0 && (
+            <GameScreen questions={questions} following={following} onExitHandler={onExitHandler} />
+          )}
         </div>
       </div>
       <div className="p-5 md:col-span-2 h-auto overflow-y-auto custom-scrollbar border border-blue-500 border-dashed">

@@ -1,7 +1,7 @@
 import { Handler } from '@netlify/functions';
 import { TwitterApi } from 'twitter-api-v2';
 import { Following } from '../src/models/models';
-import shuffle from '../src/utilities/shuffle-array';
+import shuffleArray from '../src/utilities/shuffle-array';
 
 const handler: Handler = async (event, _context) => {
   try {
@@ -17,7 +17,7 @@ const handler: Handler = async (event, _context) => {
 
     const followingList: Array<Following> = [];
     if (Array.isArray(following) && following.length > 0) {
-      followingList.push(...shuffle(following).splice(0, 10));
+      followingList.push(...shuffleArray(following).splice(0, 10));
     }
 
     return {
