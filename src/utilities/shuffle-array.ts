@@ -3,7 +3,7 @@
   ref - https://en.wikipedia.org/wiki/Fisher–Yates_shuffle
   ref - https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array/18650169#18650169
 */
-export default function shuffle(array: Array<any>) {
+export default function shuffleArray(array: Array<any>) {
   const shuffledArray = array;
   let currentIndex = array.length;
   let randomIndex;

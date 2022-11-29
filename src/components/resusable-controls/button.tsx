@@ -8,7 +8,6 @@ interface ButtonProps {
 function Button({ label, type, onClick, disabled }: ButtonProps) {
   return (
     <button
-      name={label}
       // eslint-disable-next-line react/button-has-type
       type={type}
       onClick={onClick}
