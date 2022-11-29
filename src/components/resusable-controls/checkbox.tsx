@@ -9,7 +9,7 @@ interface Props {
 
 function Checkbox({ id, label, checked, onChange }: Props) {
   return (
-    <div className="py-4 flex items-center">
+    <label className="flex py-2 cursor-pointer select-none" htmlFor={id}>
       <div className="bg-white border rounded-sm border-gray-400 w-5 h-5 flex flex-shrink-0 justify-center items-center relative">
         <input
           id={id}
@@ -22,13 +22,14 @@ function Checkbox({ id, label, checked, onChange }: Props) {
           className={`check-icon bg-indigo-700 text-white rounded-sm ${checked ? '' : 'hidden'}`}
         >
           <img
+            className="max-w-none"
             src="https://tuk-cdn.s3.amazonaws.com/can-uploader/checkbox_large-svg1.svg"
             alt="tick"
           />
         </div>
       </div>
-      <p className="ml-3 text-base leading-4 font-normal text-gray-800">{label}</p>
-    </div>
+      <p className="ml-3 mt-[1px] text-base leading-4 font-normal text-gray-800">{label}</p>
+    </label>
   );
 }
 
