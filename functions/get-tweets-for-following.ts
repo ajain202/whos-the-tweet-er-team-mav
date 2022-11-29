@@ -19,7 +19,7 @@ const handler: Handler = async (event, _context) => {
         max_results: 100,
         exclude: 'retweets,replies',
       });
-      followingTweets.push({ following, tweets });
+      followingTweets.push({ following, tweets: tweets ? tweets : [] });
     }
     return {
       statusCode: 200,
