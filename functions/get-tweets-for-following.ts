@@ -18,7 +18,7 @@ const handler: Handler = async (event, _context) => {
       const { data: tweets } = await client.v2.get(`users/${following}/tweets`, {
         max_results: 100,
       });
-      followingTweets.push({ following, tweets });
+      followingTweets.push({ following, tweets: tweets ? tweets : [] });
     }
     return {
       statusCode: 200,
