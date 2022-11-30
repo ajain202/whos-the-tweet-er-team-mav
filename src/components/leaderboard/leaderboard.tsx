@@ -1,5 +1,4 @@
-import { User } from 'firebase/auth';
-import { collection, query, onSnapshot, DocumentData } from 'firebase/firestore';
+import { collection, DocumentData, onSnapshot, query } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import { firestoreDB } from '../../firebase/firebase-client';
 

@@ -35,7 +35,7 @@ function App() {
             username: JSON.parse(JSON.stringify(result))['_tokenResponse']?.screenName,
             score: 0,
           };
-          const userScoreRef = doc(firestoreDB, 'score', result?.user.uid);
+          const userScoreRef = doc(firestoreDB, 'score', result.user.uid);
           getDoc(userScoreRef)
             .then((docSnap) => {
               if (!docSnap.exists()) {
