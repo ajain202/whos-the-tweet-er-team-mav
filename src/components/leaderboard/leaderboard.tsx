@@ -25,7 +25,7 @@ function Leaderboard() {
   }, []);
 
   return (
-    <div className="w-full items-center p-10">
+    <div className="w-full items-center">
       <div className="bg-white rounded-lg shadow-md">
         <ul className="flex flex-col divide divide-y">
           {scores.map(({ name, username, score }) => (

@@ -6,7 +6,7 @@ interface Props {
 
 function TweetCard({ question }: Props) {
   return (
-    <div className="bg-gray-50 flex items-center justify-center w-full">
+    <div className="flex items-center justify-center w-full">
       <div className="bg-white border-gray-200 p-4 rounded-xl border max-w-xl w-full">
         <div className="flex justify-between">
           <div className="flex items-center">
