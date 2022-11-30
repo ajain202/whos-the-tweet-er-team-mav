@@ -1,5 +1,7 @@
+import { User } from 'firebase/auth';
 import { useState } from 'react';
 import { Following, Question } from '../../models/models';
+import updateScore from '../../utilities/update-score';
 import Button from '../resusable-controls/button';
 import QuestionCard from './question-card';
 
@@ -7,21 +9,22 @@ interface Props {
   questions: Array<Question>;
   following: Array<Following>;
   onExitHandler: React.MouseEventHandler<HTMLButtonElement>;
+  session: User;
 }
 
-function GameScreen({ questions, following, onExitHandler }: Props) {
+function GameScreen({ questions, following, onExitHandler, session }: Props) {
   const [index, setIndex] = useState<number>(0);
 
-  const onAnswerClickHandler = (
+  const onAnswerClickHandler = async (
     _e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
     clickedAnswer: string,
   ) => {
-    if (questions[index].answer === clickedAnswer) {
-      console.log('Correct');
-    } else {
-      console.log('Wrong');
+    try {
+      await updateScore(questions[index], clickedAnswer, session);
+      setIndex(index + 1);
+    } catch (_error) {
+      alert('Something went wrong in updating score');
     }
-    setIndex(index + 1);
   };
 
   return index < questions.length ? (

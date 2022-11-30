@@ -93,21 +93,30 @@ function Home({ oAuthCredential, session }: Props) {
   return (
     <div className="container mx-auto p-5 xl:px-0 grid grid-cols-1 md:grid-cols-5 gap-8 md:gap-8 md:h-[85vh] max-w-[1200px]">
       <div className="p-5 md:col-span-3 h-auto border border-blue-500 border-dashed">
-        <div className="flex flex-col items-center">
-          {stage === 'start' && (
-            <Button label="Start Game" type="button" onClick={onStartHandler} />
-          )}
-          {stage === 'following' && (
-            <FollowingList
-              following={following}
-              setFollowing={setFollowing}
-              onFollowingSubmitHandler={onFollowingSubmitHandler}
-            />
-          )}
-          {stage === 'ingame' && questions.length > 0 && (
-            <GameScreen questions={questions} following={following} onExitHandler={onExitHandler} />
-          )}
-        </div>
+        {session ? (
+          <div className="flex flex-col items-center">
+            {stage === 'start' && (
+              <Button label="Start Game" type="button" onClick={onStartHandler} />
+            )}
+            {stage === 'following' && (
+              <FollowingList
+                following={following}
+                setFollowing={setFollowing}
+                onFollowingSubmitHandler={onFollowingSubmitHandler}
+              />
+            )}
+            {stage === 'ingame' && questions.length > 0 && (
+              <GameScreen
+                questions={questions}
+                following={following}
+                onExitHandler={onExitHandler}
+                session={session}
+              />
+            )}
+          </div>
+        ) : (
+          <div className="flex flex-col items-center">Please login</div>
+        )}
       </div>
       <div className="p-5 md:col-span-2 h-auto overflow-y-auto custom-scrollbar border border-blue-500 border-dashed">
         <div className="flex flex-col items-center">
