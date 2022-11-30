@@ -6,6 +6,7 @@ import GameScreen from '../game-screen/game-screen';
 import Button from '../resusable-controls/button';
 import FollowingList from './following-list';
 import generateQuestions from '../../utilities/generate-questions';
+import Leaderboard from '../leaderboard/leaderboard';
 
 interface Props {
   oAuthCredential: OAuthCredential | null;
@@ -109,7 +110,10 @@ function Home({ oAuthCredential, session }: Props) {
         </div>
       </div>
       <div className="p-5 md:col-span-2 h-auto overflow-y-auto custom-scrollbar border border-blue-500 border-dashed">
-        <div className="flex flex-col items-center">Leaderboard</div>
+        <div className="flex flex-col items-center">
+          <p className="font-semibold text-lg">Leaderboards</p>
+          <Leaderboard />
+        </div>
       </div>
     </div>
   );
