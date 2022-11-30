@@ -19,7 +19,7 @@ function App() {
   const [oAuthCredential, setOAuthCredential] = useState<OAuthCredential | null>(null);
 
   useEffect(() => {
-    const oAuthCredFromStorage = localStorage.getItem('oauth_credential');
+    const oAuthCredFromStorage = sessionStorage.getItem('oauth_credential');
     if (oAuthCredFromStorage) {
       setOAuthCredential(JSON.parse(oAuthCredFromStorage));
     }
@@ -45,7 +45,7 @@ function App() {
             .catch(() => alert("Score card wasn't created please login again"));
           const credential = TwitterAuthProvider.credentialFromResult(result);
           setOAuthCredential(credential);
-          localStorage.setItem('oauth_credential', JSON.stringify(credential));
+          sessionStorage.setItem('oauth_credential', JSON.stringify(credential));
         }
       })
       .catch((error) => {

@@ -36,7 +36,7 @@ function Navigation({ session, setSession, setOAuthCredential }: Props) {
         .then(() => {
           setSession(null);
           setOAuthCredential(null);
-          localStorage.clear();
+          sessionStorage.clear();
           window.location.href = '/';
         })
         .catch((error) => {
