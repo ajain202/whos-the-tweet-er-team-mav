@@ -8,6 +8,8 @@ import {
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import toast, { Toaster } from 'react-hot-toast';
+import { FaceIdError } from 'tabler-icons-react';
 import './App.css';
 import About from './components/about/about';
 import Home from './components/home/home';
@@ -42,14 +44,16 @@ function App() {
                 setDoc(userScoreRef, user);
               }
             })
-            .catch(() => alert("Score card wasn't created please login again"));
+            .catch(() =>
+              toast("Score card wasn't created please login again", { icon: <FaceIdError /> }),
+            );
           const credential = TwitterAuthProvider.credentialFromResult(result);
           setOAuthCredential(credential);
           sessionStorage.setItem('oauth_credential', JSON.stringify(credential));
         }
       })
-      .catch((error) => {
-        console.log(error);
+      .catch(() => {
+        toast('Twitter messed up!! try logging in again', { icon: <FaceIdError /> });
       });
 
     onAuthStateChanged(firebaseAuth, (user) => {
@@ -68,6 +72,11 @@ function App() {
         <Route path="/" element={<Home oAuthCredential={oAuthCredential} session={session} />} />
         <Route path="/about" element={<About />} />
       </Routes>
+      <Toaster
+        toastOptions={{
+          duration: 5000,
+        }}
+      />
     </BrowserRouter>
   );
 }

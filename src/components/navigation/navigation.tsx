@@ -7,7 +7,8 @@ import {
 } from 'firebase/auth';
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { BrandTwitter, Icon, Menu2, X } from 'tabler-icons-react';
+import toast from 'react-hot-toast';
+import { BrandTwitter, Icon, Menu2, X, FaceIdError } from 'tabler-icons-react';
 import logo from '../../assets/images/logo.png';
 import { firebaseAuth } from '../../firebase/firebase-client';
 import Button from '../resusable-controls/button';
@@ -39,8 +40,10 @@ function Navigation({ session, setSession, setOAuthCredential }: Props) {
           sessionStorage.clear();
           window.location.href = '/';
         })
-        .catch((error) => {
-          console.log('error', error);
+        .catch(() => {
+          toast('Just close the tab to logout', {
+            icon: <FaceIdError />,
+          });
         });
     } else {
       const provider = new TwitterAuthProvider();
