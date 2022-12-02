@@ -10,7 +10,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { BrandTwitter, Icon, Menu2, X } from 'tabler-icons-react';
 import logo from '../../assets/images/logo.png';
 import { firebaseAuth } from '../../firebase/firebase-client';
-import Button from '../resusable-controls/button';
+import TwitterButton from '../resusable-controls/twitter-button';
 
 interface NavOptions {
   name: string;
@@ -100,7 +100,10 @@ function Navigation({ session, setSession, setOAuthCredential }: Props) {
                 ))}
               </div>
               <div className="flex items-center">
-                <Button label={session ? 'Logout' : 'Login'} type="button" onClick={authHandler} />
+                <TwitterButton
+                  label={session ? 'Log out' : 'Sign in with Twitter'}
+                  onClick={authHandler}
+                />
               </div>
             </div>
           </div>
@@ -171,16 +174,11 @@ function Navigation({ session, setSession, setOAuthCredential }: Props) {
                     ))}
                   </ul>
                 </div>
-                <div className="w-full pt-4">
-                  <div className="border-t border-gray-300">
-                    <div className="w-full flex items-center justify-between pt-1">
-                      <Button
-                        label={session ? 'Logout' : 'Login'}
-                        type="button"
-                        onClick={authHandler}
-                      />
-                    </div>
-                  </div>
+                <div className="w-full">
+                  <TwitterButton
+                    label={session ? 'Log out' : 'Sign in with Twitter'}
+                    onClick={authHandler}
+                  />
                 </div>
               </div>
             </div>

@@ -6,9 +6,15 @@ interface Props {
   following: Following[];
   setFollowing: React.Dispatch<React.SetStateAction<Following[]>>;
   onFollowingSubmitHandler: React.MouseEventHandler<HTMLButtonElement>;
+  disableFollowingButton: boolean;
 }
 
-function FollowingList({ following, setFollowing, onFollowingSubmitHandler }: Props) {
+function FollowingList({
+  following,
+  setFollowing,
+  onFollowingSubmitHandler,
+  disableFollowingButton,
+}: Props) {
   const onFollowingChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFollowing(
       following.map((foll) =>
@@ -32,7 +38,12 @@ function FollowingList({ following, setFollowing, onFollowingSubmitHandler }: Pr
           </li>
         ))}
       </ul>
-      <Button label="Submit" type="button" onClick={onFollowingSubmitHandler} />
+      <Button
+        label={disableFollowingButton ? 'Loading...' : 'Submit'}
+        type="button"
+        onClick={onFollowingSubmitHandler}
+        disabled={disableFollowingButton}
+      />
     </div>
   );
 }

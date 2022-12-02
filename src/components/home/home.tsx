@@ -2,11 +2,11 @@ import axios from 'axios';
 import { OAuthCredential, User } from 'firebase/auth';
 import { useState } from 'react';
 import { Following, FollowingTweets, Question } from '../../models/models';
+import generateQuestions from '../../utilities/generate-questions';
 import GameScreen from '../game-screen/game-screen';
 import Button from '../resusable-controls/button';
+import ScoreBoard from '../score/score-board';
 import FollowingList from './following-list';
-import generateQuestions from '../../utilities/generate-questions';
-import Leaderboard from '../leaderboard/leaderboard';
 
 interface Props {
   oAuthCredential: OAuthCredential | null;
@@ -17,10 +17,13 @@ function Home({ oAuthCredential, session }: Props) {
   const [stage, setStage] = useState<'start' | 'following' | 'ingame'>('start');
   const [following, setFollowing] = useState<Array<Following>>([]);
   const [questions, setQuestions] = useState<Array<Question>>([]);
+  const [disableStartButton, setDisableStartButton] = useState(false);
+  const [disableFollowingButton, setDisableFollowingButton] = useState(false);
 
   const onStartHandler = async () => {
     try {
       if (oAuthCredential?.accessToken && oAuthCredential.secret) {
+        setDisableStartButton(true);
         const { data }: { data: Array<Following> } = await axios.get(
           '/.netlify/functions/get-following',
           {
@@ -33,6 +36,7 @@ function Home({ oAuthCredential, session }: Props) {
         if (Array.isArray(data)) {
           if (data.length > 2) {
             setFollowing(data);
+            setDisableStartButton(false);
             setStage('following');
           } else {
             alert("You won't be able to play the game as you don't follow enough users");
@@ -42,6 +46,7 @@ function Home({ oAuthCredential, session }: Props) {
         }
       }
     } catch (_error) {
+      setDisableStartButton(false);
       alert('Something went wrong, try again in some time');
     }
   };
@@ -54,6 +59,7 @@ function Home({ oAuthCredential, session }: Props) {
       } else if (selectedCount > 5) {
         alert('At most 5 users are allowed');
       } else if (oAuthCredential?.accessToken && oAuthCredential.secret) {
+        setDisableFollowingButton(true);
         const { data }: { data: FollowingTweets } = await axios.get(
           '/.netlify/functions/get-tweets-for-following',
           {
@@ -78,9 +84,11 @@ function Home({ oAuthCredential, session }: Props) {
         } else {
           alert('Something went wrong, try again in some time');
         }
+        setDisableFollowingButton(false);
       }
     } catch (_error) {
       alert('Something went wrong, try again in some time');
+      setDisableFollowingButton(false);
     }
   };
 
@@ -92,17 +100,23 @@ function Home({ oAuthCredential, session }: Props) {
 
   return (
     <div className="container mx-auto p-5 xl:px-0 grid grid-cols-1 md:grid-cols-5 gap-8 md:gap-8 md:h-[85vh] max-w-[1200px]">
-      <div className="p-5 md:col-span-3 h-auto border border-blue-500 border-dashed">
+      <div className="p-5 md:col-span-3 h-auto">
         {session ? (
           <div className="flex flex-col items-center">
             {stage === 'start' && (
-              <Button label="Start Game" type="button" onClick={onStartHandler} />
+              <Button
+                disabled={disableStartButton}
+                label={disableStartButton ? 'Loading...' : 'Start Game'}
+                type="button"
+                onClick={onStartHandler}
+              />
             )}
             {stage === 'following' && (
               <FollowingList
                 following={following}
                 setFollowing={setFollowing}
                 onFollowingSubmitHandler={onFollowingSubmitHandler}
+                disableFollowingButton={disableFollowingButton}
               />
             )}
             {stage === 'ingame' && questions.length > 0 && (
@@ -118,10 +132,9 @@ function Home({ oAuthCredential, session }: Props) {
           <div className="flex flex-col items-center">Please login</div>
         )}
       </div>
-      <div className="p-5 md:col-span-2 h-auto overflow-y-auto custom-scrollbar border border-blue-500 border-dashed">
+      <div className="p-5 md:col-span-2 h-auto overflow-y-auto">
         <div className="flex flex-col items-center">
-          <p className="font-semibold text-lg">Leaderboards</p>
-          <Leaderboard />
+          <ScoreBoard session={session} />
         </div>
       </div>
     </div>

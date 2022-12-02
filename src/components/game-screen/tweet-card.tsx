@@ -1,4 +1,5 @@
 import { Question } from '../../models/models';
+import ProfilePicture from '../../assets/images/twitter-profile-picture.jpg';
 
 interface Props {
   question: Question;
@@ -7,17 +8,13 @@ interface Props {
 function TweetCard({ question }: Props) {
   return (
     <div className="flex items-center justify-center w-full">
-      <div className="bg-white border-gray-200 p-4 rounded-xl border max-w-xl w-full">
+      <div className="  min-h-[300px] bg-white border-gray-200 p-4 rounded-xl border w-full flex-col justify-between flex">
         <div className="flex justify-between">
           <div className="flex items-center">
-            <img
-              className="h-11 w-11 rounded-full"
-              src="https://pbs.twimg.com/profile_images/1287562748562309122/4RLk5A_U_x96.jpg"
-              alt="profile"
-            />
+            <img className="h-11 w-11 rounded-full" src={ProfilePicture} alt="profile" />
             <div className="ml-1.5 text-sm leading-tight">
-              <span className="text-black font-bold block ">???</span>
-              <span className="text-gray-500 font-normal block">???</span>
+              <span className="text-black font-bold block ">???????????</span>
+              <span className="text-gray-500 font-normal block">@_____</span>
             </div>
           </div>
           <svg className="text-blue-400 h-6 w-auto inline-block fill-current" viewBox="0 0 24 24">
@@ -27,8 +24,10 @@ function TweetCard({ question }: Props) {
           </svg>
         </div>
         <p className="text-black block text-xl leading-snug my-3">{question.tweet}</p>
-        <div className="border-gray-200 border border-b-0 my-1" />
-        <p className="text-gray-500 text-base py-1 my-0.5">10:05 AM · Dec 19, 2020</p>
+        <div>
+          <div className="border-gray-200 border border-b-0 my-1" />
+          <p className="text-gray-500 text-base py-1 my-0.5">10:05 AM · Dec 19, 2020</p>
+        </div>
       </div>
     </div>
   );
