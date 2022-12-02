@@ -22,3 +22,10 @@ export interface Question {
   answer: string;
   score: number;
 }
+
+export interface Score {
+  name: string;
+  username: string;
+  score: number;
+  id: string;
+}

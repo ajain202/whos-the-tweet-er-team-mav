@@ -6,9 +6,10 @@ interface Props {
   question: Question;
   following: Array<Following>;
   onAnswerClickHandler: Function;
+  disableAnswerButton: boolean;
 }
 
-function QuestionCard({ question, following, onAnswerClickHandler }: Props) {
+function QuestionCard({ question, following, onAnswerClickHandler, disableAnswerButton }: Props) {
   const userDetailsMap = new Map();
   following.forEach(({ id, name, username }) => {
     userDetailsMap.set(id, { name, username });
@@ -23,6 +24,7 @@ function QuestionCard({ question, following, onAnswerClickHandler }: Props) {
       <div className="mt-5 flex justify-around w-full">
         <Pill
           type="button"
+          disabled={disableAnswerButton}
           primaryLabel={userDetailsMap.get(option[0]).name}
           secondaryLabel={`@${userDetailsMap.get(option[0]).username}`}
           onClick={(e) => {
@@ -31,6 +33,7 @@ function QuestionCard({ question, following, onAnswerClickHandler }: Props) {
         />
         <Pill
           type="button"
+          disabled={disableAnswerButton}
           primaryLabel={userDetailsMap.get(option[1]).name}
           secondaryLabel={`@${userDetailsMap.get(option[1]).username}`}
           onClick={(e) => {

@@ -13,7 +13,7 @@ function Pill({ primaryLabel, secondaryLabel, type, onClick, disabled }: ButtonP
       type={type}
       onClick={onClick}
       disabled={disabled}
-      className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
+      className="min-w-[50%] py-2.5 px-5 mr-2 text-sm font-medium text-gray-900 focus:outline-none bg-[#f7f9f9] rounded-full border-[1.5px] border-gray-200 hover:bg-[rgba(0,0,0,0.05)] hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 disabled:cursor-not-allowed"
     >
       <div className="px-3">
         <div className="font-medium text-sm">{primaryLabel}</div>

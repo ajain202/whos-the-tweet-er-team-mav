@@ -16,6 +16,7 @@ interface Props {
 
 function GameScreen({ questions, following, onExitHandler, session }: Props) {
   const [index, setIndex] = useState<number>(0);
+  const [disableAnswerButton, setDisableButtonSubmit] = useState(false);
 
   const onAnswerClickHandler = async (
     _e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
@@ -23,6 +24,7 @@ function GameScreen({ questions, following, onExitHandler, session }: Props) {
   ) => {
     const toastId = toast.loading('Hmmmm checking your answer');
     try {
+      setDisableButtonSubmit(true);
       await updateScore(questions[index], clickedAnswer, session);
       if (clickedAnswer === questions[index].answer) {
         toast.success(
@@ -37,7 +39,9 @@ function GameScreen({ questions, following, onExitHandler, session }: Props) {
         });
       }
       setIndex(index + 1);
+      setDisableButtonSubmit(false);
     } catch (_error) {
+      setDisableButtonSubmit(false);
       toast.remove(toastId);
       toast("Why Database why??? couldn't update your score try again", { icon: <FaceIdError /> });
     }
@@ -48,6 +52,7 @@ function GameScreen({ questions, following, onExitHandler, session }: Props) {
       question={questions[index]}
       following={following}
       onAnswerClickHandler={onAnswerClickHandler}
+      disableAnswerButton={disableAnswerButton}
     />
   ) : (
     <div>
