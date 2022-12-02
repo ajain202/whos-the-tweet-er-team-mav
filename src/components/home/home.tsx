@@ -1,6 +1,8 @@
 import axios from 'axios';
 import { OAuthCredential, User } from 'firebase/auth';
 import { useState } from 'react';
+import toast from 'react-hot-toast';
+import { FaceIdError } from 'tabler-icons-react';
 import { Following, FollowingTweets, Question } from '../../models/models';
 import generateQuestions from '../../utilities/generate-questions';
 import GameScreen from '../game-screen/game-screen';
@@ -39,15 +41,17 @@ function Home({ oAuthCredential, session }: Props) {
             setDisableStartButton(false);
             setStage('following');
           } else {
-            alert("You won't be able to play the game as you don't follow enough users");
+            toast("Why are you even playing you don't follow enough people", {
+              icon: <FaceIdError />,
+            });
           }
         } else {
-          alert('Something went wrong, try again in some time');
+          toast("Twitter isn't talking to us try again in some time", { icon: <FaceIdError /> });
         }
       }
     } catch (_error) {
+      toast("Twitter isn't talking to us try again in some time", { icon: <FaceIdError /> });
       setDisableStartButton(false);
-      alert('Something went wrong, try again in some time');
     }
   };
 
@@ -55,9 +59,9 @@ function Home({ oAuthCredential, session }: Props) {
     try {
       const selectedCount = following.filter(({ selected }) => selected).length;
       if (selectedCount < 2) {
-        alert('At least 2 users are required');
+        toast('Did you even read the rules select atleast 2', { icon: <FaceIdError /> });
       } else if (selectedCount > 5) {
-        alert('At most 5 users are allowed');
+        toast('Did you even read the rules select atmost 5', { icon: <FaceIdError /> });
       } else if (oAuthCredential?.accessToken && oAuthCredential.secret) {
         setDisableFollowingButton(true);
         const { data }: { data: FollowingTweets } = await axios.get(
@@ -79,16 +83,18 @@ function Home({ oAuthCredential, session }: Props) {
             setQuestions(genQuestions);
             setStage('ingame');
           } else {
-            alert('Select different users');
+            toast('These people s@ck, choose someone else', { icon: <FaceIdError /> });
           }
         } else {
-          alert('Something went wrong, try again in some time');
+          toast('twitter hates me cause am cooler, try again in some time', {
+            icon: <FaceIdError />,
+          });
         }
         setDisableFollowingButton(false);
       }
     } catch (_error) {
-      alert('Something went wrong, try again in some time');
       setDisableFollowingButton(false);
+      toast('twitter hates me cause am cooler, try again in some time', { icon: <FaceIdError /> });
     }
   };
 
