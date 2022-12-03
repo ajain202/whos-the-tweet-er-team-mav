@@ -5,9 +5,12 @@ import { decryptData } from '../src/utilities/encryption';
 
 const handler: Handler = async (event, _context) => {
   try {
-    const { accessToken, accessSecret, following, eat } = JSON.parse(
-      decryptData(event.queryStringParameters.token),
+    const decryptedData = await decryptData(
+      event.queryStringParameters.token,
+      event.queryStringParameters.uid,
     );
+    const { accessToken, accessSecret, following, eat } = JSON.parse(decryptedData);
+
     if (eat && eat > Date.now()) {
       const client = new TwitterApi({
         appKey: process.env.TWITTER_API_KEY || '',

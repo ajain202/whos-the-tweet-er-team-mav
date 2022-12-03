@@ -37,7 +37,11 @@ function App() {
             username: JSON.parse(JSON.stringify(result))['_tokenResponse']?.screenName,
             score: 0,
           };
+          const userSecret = {
+            secret: '',
+          };
           const userScoreRef = doc(firestoreDB, 'score', result.user.uid);
+          const userSecretRef = doc(firestoreDB, 'userSecrets', result.user.uid);
           getDoc(userScoreRef)
             .then((docSnap) => {
               if (!docSnap.exists()) {
@@ -46,6 +50,17 @@ function App() {
             })
             .catch(() =>
               toast("Score card wasn't created please login again", { icon: <FaceIdError /> }),
+            );
+          getDoc(userSecretRef)
+            .then((docSnap) => {
+              if (!docSnap.exists()) {
+                setDoc(userSecretRef, userSecret);
+              }
+            })
+            .catch(() =>
+              toast('Elon Musk is making some changes!!! Try again later', {
+                icon: <FaceIdError />,
+              }),
             );
           const credential = TwitterAuthProvider.credentialFromResult(result);
           setOAuthCredential(credential);

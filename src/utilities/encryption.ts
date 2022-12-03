@@ -1,14 +1,26 @@
 import AES from 'crypto-js/aes';
 import enc from 'crypto-js/enc-utf8';
+import { doc, getDoc } from 'firebase/firestore';
+import { firestoreDB } from '../firebase/firebase-client';
 
-function encryptData(val: string) {
-  const encrypted = AES.encrypt(val, process.env.REACT_APP_ENCRYPTION_KEY || '').toString();
+function encryptData(val: string, userSecret: string) {
+  const encrypted = AES.encrypt(val, userSecret).toString();
   return encrypted;
 }
 
-function decryptData(val: string) {
-  const decrypted = AES.decrypt(val, process.env.REACT_APP_ENCRYPTION_KEY || '').toString(enc);
-  return decrypted;
+function decryptData(val: string, uid: string): Promise<string> {
+  // eslint-disable-next-line no-async-promise-executor
+  return new Promise(async (resolve, reject) => {
+    try {
+      const userSecretRef = doc(firestoreDB, 'userSecrets', uid);
+      const docsnap = await getDoc(userSecretRef);
+      const userSecret = docsnap.data()?.secret as string;
+      const decrypted = AES.decrypt(val, userSecret).toString(enc);
+      resolve(decrypted);
+    } catch (_error) {
+      reject(_error);
+    }
+  });
 }
 
 export { encryptData, decryptData };
