@@ -6,12 +6,16 @@ import { Score } from '../../models/models';
 import ScoreCard from '../resusable-controls/score-card';
 import Leaderboard from './leaderboard';
 
-function ScoreBoard({ session }: { session: User | null }) {
+interface Props {
+  session: User | null;
+}
+
+function ScoreBoard({ session }: Props) {
   const [scores, setScores] = useState<Array<Score>>([]);
 
   useEffect(() => {
-    const q = query(collection(firestoreDB, 'score'));
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+    const qry = query(collection(firestoreDB, 'score'));
+    const unsubscribe = onSnapshot(qry, (querySnapshot) => {
       if (querySnapshot) {
         const tempscores: Array<Score> = [];
         querySnapshot.forEach((doc) => {
@@ -28,6 +32,7 @@ function ScoreBoard({ session }: { session: User | null }) {
   }, []);
 
   const currentUserScore = scores.find(({ id }) => id === session?.uid);
+
   return (
     <div className="w-full">
       {session && (
