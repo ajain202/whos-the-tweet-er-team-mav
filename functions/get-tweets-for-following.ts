@@ -22,13 +22,22 @@ const handler: Handler = async (event, _context) => {
       const followingList: Array<string> = following?.split(',') || [];
       const followingTweets: Array<FollowingTweets> = [];
 
+      const promises = [];
       for (const following of followingList) {
-        const { data: tweets } = await client.v2.get(`users/${following}/tweets`, {
-          max_results: 100,
-          exclude: 'retweets,replies',
-        });
-        followingTweets.push({ following, tweets: tweets ? tweets : [] });
+        promises.push(
+          client.v2.get(`users/${following}/tweets`, {
+            max_results: 100,
+            exclude: 'retweets,replies',
+          }),
+        );
       }
+
+      (await Promise.allSettled(promises)).forEach((result, index) => {
+        if (result.status === 'fulfilled') {
+          const { data: tweets } = result.value;
+          followingTweets.push({ following: followingList[index], tweets: tweets ? tweets : [] });
+        }
+      });
       return {
         statusCode: 200,
         body: JSON.stringify(followingTweets),
