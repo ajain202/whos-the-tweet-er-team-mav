@@ -50,6 +50,7 @@ function GameScreen({ questions, following, onExitHandler, session }: Props) {
   return index < questions.length ? (
     <QuestionCard
       question={questions[index]}
+      score={questions[index].score}
       following={following}
       onAnswerClickHandler={onAnswerClickHandler}
       disableAnswerButton={disableAnswerButton}

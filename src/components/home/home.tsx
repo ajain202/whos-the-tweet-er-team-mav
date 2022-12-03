@@ -9,6 +9,7 @@ import GameScreen from '../game-screen/game-screen';
 import Button from '../resusable-controls/button';
 import ScoreBoard from '../score/score-board';
 import FollowingList from './following-list';
+import Instructions from './instructions';
 
 interface Props {
   oAuthCredential: OAuthCredential | null;
@@ -110,12 +111,17 @@ function Home({ oAuthCredential, session }: Props) {
         {session ? (
           <div className="flex flex-col items-center">
             {stage === 'start' && (
-              <Button
-                disabled={disableStartButton}
-                label={disableStartButton ? 'Loading...' : 'Start Game'}
-                type="button"
-                onClick={onStartHandler}
-              />
+              <>
+                <Button
+                  disabled={disableStartButton}
+                  label={disableStartButton ? 'Loading...' : 'Start Game'}
+                  type="button"
+                  onClick={onStartHandler}
+                />
+                <div className="mt-5">
+                  <Instructions />
+                </div>
+              </>
             )}
             {stage === 'following' && (
               <FollowingList

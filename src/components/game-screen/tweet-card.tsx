@@ -3,9 +3,10 @@ import ProfilePicture from '../../assets/images/twitter-profile-picture.jpg';
 
 interface Props {
   question: Question;
+  score: number;
 }
 
-function TweetCard({ question }: Props) {
+function TweetCard({ question, score }: Props) {
   return (
     <div className="flex items-center justify-center w-full">
       <div className="  min-h-[300px] bg-white border-gray-200 p-4 rounded-xl border w-full flex-col justify-between flex">
@@ -26,7 +27,10 @@ function TweetCard({ question }: Props) {
         <p className="text-black block text-xl leading-snug my-3">{question.tweet}</p>
         <div>
           <div className="border-gray-200 border border-b-0 my-1" />
-          <p className="text-gray-500 text-base py-1 my-0.5">10:05 AM · Dec 19, 2020</p>
+          <div className="flex flex-row justify-between">
+            <p className="text-gray-500 text-base py-1 my-0.5">10:05 AM · Dec 19, 2020</p>
+            <p className="text-gray-700 text-base py-1 my-0.5 font-medium">Points: {score}</p>
+          </div>
         </div>
       </div>
     </div>

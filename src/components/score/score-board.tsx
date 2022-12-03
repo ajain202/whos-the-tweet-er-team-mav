@@ -33,7 +33,7 @@ function ScoreBoard({ session }: { session: User | null }) {
       {session && (
         <>
           <p className="font-semibold text-lg mb-2">Your Score</p>
-          <div className="bg-[#f7f9f9] rounded-lg shadow-md hover:bg-[rgba(0,0,0,0.05)]">
+          <div className="bg-[#f1f2f2] rounded-lg shadow-md hover:bg-[rgba(0,0,0,0.05)]">
             {currentUserScore && <ScoreCard score={currentUserScore} />}
           </div>
         </>
