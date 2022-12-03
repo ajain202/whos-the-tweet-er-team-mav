@@ -12,11 +12,15 @@ function decryptData(val: string, uid: string): Promise<string> {
   // eslint-disable-next-line no-async-promise-executor
   return new Promise(async (resolve, reject) => {
     try {
-      const userSecretRef = doc(firestoreDB, 'userSecrets', uid);
-      const docsnap = await getDoc(userSecretRef);
-      const userSecret = docsnap.data()?.secret as string;
-      const decrypted = AES.decrypt(val, userSecret).toString(enc);
-      resolve(decrypted);
+      if (val && uid) {
+        const userSecretRef = doc(firestoreDB, 'userSecrets', uid);
+        const docsnap = await getDoc(userSecretRef);
+        const userSecret = docsnap.data()?.secret as string;
+        const decrypted = AES.decrypt(val, userSecret).toString(enc);
+        resolve(decrypted);
+      } else {
+        resolve('{}');
+      }
     } catch (_error) {
       reject(_error);
     }
