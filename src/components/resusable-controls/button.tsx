@@ -1,11 +1,11 @@
-interface ButtonProps {
+interface Props {
   label: string;
   type: 'button' | 'submit' | 'reset' | undefined;
   disabled?: boolean;
   onClick: React.MouseEventHandler<HTMLButtonElement> | undefined;
 }
 
-function Button({ label, type, onClick, disabled }: ButtonProps) {
+function Button({ label, type, onClick, disabled }: Props) {
   return (
     <button
       // eslint-disable-next-line react/button-has-type

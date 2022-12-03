@@ -60,7 +60,6 @@ function Home({ oAuthCredential, session }: Props) {
         if (Array.isArray(data)) {
           if (data.length > 2) {
             setFollowing(data);
-            setDisableStartButton(false);
             setStage('following');
           } else {
             toast("Why are you even playing you don't follow enough people", {
@@ -70,6 +69,7 @@ function Home({ oAuthCredential, session }: Props) {
         } else {
           toast("Twitter isn't talking to us try again in some time", { icon: <FaceIdError /> });
         }
+        setDisableStartButton(false);
       }
     } catch (_error) {
       await updateDoc(userSecretsRef, {

@@ -3,6 +3,7 @@ import { Score } from '../../models/models';
 interface Props {
   score: Score;
 }
+
 function ScoreCard({ score }: Props) {
   return (
     <div className="select-none flex flex-1 items-center p-4">

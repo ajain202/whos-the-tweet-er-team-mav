@@ -1,5 +1,5 @@
-import { Question } from '../../models/models';
 import ProfilePicture from '../../assets/images/twitter-profile-picture.jpg';
+import { Question } from '../../models/models';
 
 interface Props {
   question: Question;
