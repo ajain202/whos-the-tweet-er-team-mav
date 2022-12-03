@@ -9,6 +9,7 @@ import GameScreen from '../game-screen/game-screen';
 import Button from '../resusable-controls/button';
 import ScoreBoard from '../score/score-board';
 import FollowingList from './following-list';
+import { encryptData } from '../../utilities/encryption';
 
 interface Props {
   oAuthCredential: OAuthCredential | null;
@@ -26,12 +27,18 @@ function Home({ oAuthCredential, session }: Props) {
     try {
       if (oAuthCredential?.accessToken && oAuthCredential.secret) {
         setDisableStartButton(true);
+        const token = encryptData(
+          JSON.stringify({
+            accessToken: oAuthCredential.accessToken,
+            accessSecret: oAuthCredential.secret,
+            eat: Date.now() + 60000,
+          }),
+        );
         const { data }: { data: Array<Following> } = await axios.get(
           '/.netlify/functions/get-following',
           {
             params: {
-              accessToken: oAuthCredential.accessToken,
-              accessSecret: oAuthCredential.secret,
+              token,
             },
           },
         );
@@ -64,16 +71,22 @@ function Home({ oAuthCredential, session }: Props) {
         toast('Did you even read the rules select atmost 5', { icon: <FaceIdError /> });
       } else if (oAuthCredential?.accessToken && oAuthCredential.secret) {
         setDisableFollowingButton(true);
+        const token = encryptData(
+          JSON.stringify({
+            accessToken: oAuthCredential.accessToken,
+            accessSecret: oAuthCredential.secret,
+            following: following
+              .filter(({ selected }) => !!selected)
+              .map(({ id }) => id)
+              .join(','),
+            eat: Date.now() + 60000,
+          }),
+        );
         const { data }: { data: FollowingTweets } = await axios.get(
           '/.netlify/functions/get-tweets-for-following',
           {
             params: {
-              accessToken: oAuthCredential.accessToken,
-              accessSecret: oAuthCredential.secret,
-              following: following
-                .filter(({ selected }) => !!selected)
-                .map(({ id }) => id)
-                .join(','),
+              token,
             },
           },
         );
@@ -83,7 +96,7 @@ function Home({ oAuthCredential, session }: Props) {
             setQuestions(genQuestions);
             setStage('ingame');
           } else {
-            toast('These people s@ck, choose someone else', { icon: <FaceIdError /> });
+            toast('These people s@#k, choose someone else', { icon: <FaceIdError /> });
           }
         } else {
           toast('twitter hates me cause am cooler, try again in some time', {
