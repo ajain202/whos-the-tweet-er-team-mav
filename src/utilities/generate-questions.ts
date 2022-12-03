@@ -36,7 +36,6 @@ function generateQuestions(
             tweets: [],
           });
         }
-
         const unusedTweets: Array<FollowingTweets> = followingTweets
           .map(({ following, tweets }: FollowingTweets) => ({
             following,

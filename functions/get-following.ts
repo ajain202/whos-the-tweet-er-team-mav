@@ -1,14 +1,16 @@
 import { Handler } from '@netlify/functions';
 import { TwitterApi } from 'twitter-api-v2';
 import { Following } from '../src/models/models';
-import shuffleArray from '../src/utilities/shuffle-array';
 import { decryptData } from '../src/utilities/encryption';
-
+import shuffleArray from '../src/utilities/shuffle-array';
 const handler: Handler = async (event, _context) => {
   try {
-    const { accessToken, accessSecret, eat } = JSON.parse(
-      decryptData(event.queryStringParameters.token),
+    const decryptedData = await decryptData(
+      event.queryStringParameters.token,
+      event.queryStringParameters.uid,
     );
+    const { accessToken, accessSecret, eat } = JSON.parse(decryptedData);
+
     if (eat && eat > Date.now()) {
       const client = new TwitterApi({
         appKey: process.env.TWITTER_API_KEY || '',
