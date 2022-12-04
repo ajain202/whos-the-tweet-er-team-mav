@@ -1,4 +1,4 @@
-interface ButtonProps {
+interface Props {
   primaryLabel: string;
   secondaryLabel: string;
   type: 'button' | 'submit' | 'reset' | undefined;
@@ -6,7 +6,7 @@ interface ButtonProps {
   onClick: React.MouseEventHandler<HTMLButtonElement> | undefined;
 }
 
-function Pill({ primaryLabel, secondaryLabel, type, onClick, disabled }: ButtonProps) {
+function Pill({ primaryLabel, secondaryLabel, type, onClick, disabled }: Props) {
   return (
     <button
       // eslint-disable-next-line react/button-has-type

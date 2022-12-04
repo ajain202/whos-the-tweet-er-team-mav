@@ -4,12 +4,19 @@ import TweetCard from './tweet-card';
 
 interface Props {
   question: Question;
+  score: number;
   following: Array<Following>;
   onAnswerClickHandler: Function;
   disableAnswerButton: boolean;
 }
 
-function QuestionCard({ question, following, onAnswerClickHandler, disableAnswerButton }: Props) {
+function QuestionCard({
+  question,
+  score,
+  following,
+  onAnswerClickHandler,
+  disableAnswerButton,
+}: Props) {
   const userDetailsMap = new Map();
   following.forEach(({ id, name, username }) => {
     userDetailsMap.set(id, { name, username });
@@ -19,7 +26,7 @@ function QuestionCard({ question, following, onAnswerClickHandler, disableAnswer
 
   return (
     <>
-      <TweetCard question={question} />
+      <TweetCard question={question} score={score} />
 
       <div className="mt-5 flex justify-around w-full">
         <Pill

@@ -13,6 +13,7 @@ import GameScreen from '../game-screen/game-screen';
 import Button from '../resusable-controls/button';
 import ScoreBoard from '../score/score-board';
 import FollowingList from './following-list';
+import Instructions from './instructions';
 
 interface Props {
   oAuthCredential: OAuthCredential | null;
@@ -59,7 +60,6 @@ function Home({ oAuthCredential, session }: Props) {
         if (Array.isArray(data)) {
           if (data.length > 2) {
             setFollowing(data);
-            setDisableStartButton(false);
             setStage('following');
           } else {
             toast("Why are you even playing you don't follow enough people", {
@@ -69,6 +69,7 @@ function Home({ oAuthCredential, session }: Props) {
         } else {
           toast("Twitter isn't talking to us try again in some time", { icon: <FaceIdError /> });
         }
+        setDisableStartButton(false);
       }
     } catch (_error) {
       await updateDoc(userSecretsRef, {
@@ -154,12 +155,17 @@ function Home({ oAuthCredential, session }: Props) {
         {session ? (
           <div className="flex flex-col items-center">
             {stage === 'start' && (
-              <Button
-                disabled={disableStartButton}
-                label={disableStartButton ? 'Loading...' : 'Start Game'}
-                type="button"
-                onClick={onStartHandler}
-              />
+              <>
+                <Button
+                  disabled={disableStartButton}
+                  label={disableStartButton ? 'Loading...' : 'Start Game'}
+                  type="button"
+                  onClick={onStartHandler}
+                />
+                <div className="mt-5">
+                  <Instructions />
+                </div>
+              </>
             )}
             {stage === 'following' && (
               <FollowingList

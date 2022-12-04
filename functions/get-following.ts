@@ -3,6 +3,7 @@ import { TwitterApi } from 'twitter-api-v2';
 import { Following } from '../src/models/models';
 import { decryptData } from '../src/utilities/encryption';
 import shuffleArray from '../src/utilities/shuffle-array';
+
 const handler: Handler = async (event, _context) => {
   try {
     const decryptedData = await decryptData(

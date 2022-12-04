@@ -6,12 +6,16 @@ import { Score } from '../../models/models';
 import ScoreCard from '../resusable-controls/score-card';
 import Leaderboard from './leaderboard';
 
-function ScoreBoard({ session }: { session: User | null }) {
+interface Props {
+  session: User | null;
+}
+
+function ScoreBoard({ session }: Props) {
   const [scores, setScores] = useState<Array<Score>>([]);
 
   useEffect(() => {
-    const q = query(collection(firestoreDB, 'score'));
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+    const qry = query(collection(firestoreDB, 'score'));
+    const unsubscribe = onSnapshot(qry, (querySnapshot) => {
       if (querySnapshot) {
         const tempscores: Array<Score> = [];
         querySnapshot.forEach((doc) => {
@@ -28,12 +32,13 @@ function ScoreBoard({ session }: { session: User | null }) {
   }, []);
 
   const currentUserScore = scores.find(({ id }) => id === session?.uid);
+
   return (
     <div className="w-full">
       {session && (
         <>
           <p className="font-semibold text-lg mb-2">Your Score</p>
-          <div className="bg-[#f7f9f9] rounded-lg shadow-md hover:bg-[rgba(0,0,0,0.05)]">
+          <div className="bg-[#f1f2f2] rounded-lg shadow-md hover:bg-[rgba(0,0,0,0.05)]">
             {currentUserScore && <ScoreCard score={currentUserScore} />}
           </div>
         </>
