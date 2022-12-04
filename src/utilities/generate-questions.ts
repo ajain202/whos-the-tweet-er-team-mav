@@ -25,7 +25,7 @@ function generateQuestions(
         let totalTweets = 0;
         const generatedQuestionSet = new Set();
         const usedRandomTweetSet = new Set();
-        let usedTweets: DocumentData = [];
+        let usedTweets: DocumentData = { tweets: [] };
 
         const userUsedTweetRef = doc(firestoreDB, 'usedTweets', session?.uid);
         const docSnap = await getDoc(userUsedTweetRef);

@@ -127,7 +127,7 @@ function Home({ oAuthCredential, session }: Props) {
             toast('These people s@#k, choose someone else', { icon: <FaceIdError /> });
           }
         } else {
-          toast('twitter hates me cause am cooler, try again in some time', {
+          toast('Twitter hates me cause am cooler, try again in some time', {
             icon: <FaceIdError />,
           });
         }
@@ -138,7 +138,7 @@ function Home({ oAuthCredential, session }: Props) {
         secret: '',
       });
       setDisableFollowingButton(false);
-      toast('twitter hates me cause am cooler, try again in some time', { icon: <FaceIdError /> });
+      toast('Twitter hates me cause am cooler, try again in some time', { icon: <FaceIdError /> });
     }
   };
 
