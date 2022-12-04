@@ -5,6 +5,7 @@ final-project-proposal-team-mav created by GitHub Classroom
 ## Who's the Tweet-er
 
 - [Who's the Tweet-er](https://whos-the-tweet-er.netlify.app)
+- [Demo](demo/demo.mp4)
 
 ### Group Members
 
