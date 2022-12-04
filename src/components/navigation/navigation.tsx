@@ -1,16 +1,17 @@
 import {
   OAuthCredential,
-  signInWithRedirect,
+  signInWithPopup,
   signOut,
   TwitterAuthProvider,
   User,
 } from 'firebase/auth';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { BrandTwitter, Icon, Menu2, X, FaceIdError } from 'tabler-icons-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { BrandTwitter, FaceIdError, Icon, Menu2, X } from 'tabler-icons-react';
 import logo from '../../assets/images/logo.png';
-import { firebaseAuth } from '../../firebase/firebase-client';
+import { firebaseAuth, firestoreDB } from '../../firebase/firebase-client';
 import TwitterButton from '../resusable-controls/twitter-button';
 
 interface NavOptions {
@@ -31,6 +32,17 @@ function Navigation({ session, setSession, setOAuthCredential }: Props) {
   const [show, setShow] = useState<boolean>(false);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    setNavOptions([
+      {
+        name: 'About',
+        link: '/about',
+        icon: BrandTwitter,
+        active: window.location.pathname === '/about',
+      },
+    ]);
+  }, [navigate]);
+
   const authHandler = () => {
     if (session) {
       signOut(firebaseAuth)
@@ -47,20 +59,52 @@ function Navigation({ session, setSession, setOAuthCredential }: Props) {
         });
     } else {
       const provider = new TwitterAuthProvider();
-      signInWithRedirect(firebaseAuth, provider);
+      signInWithPopup(firebaseAuth, provider)
+        .then((result) => {
+          // This gives you a the Twitter OAuth 1.0 Access Token and Secret.
+          // You can use these server side with your app's credentials to access the Twitter API.
+          if (result) {
+            const user = {
+              name: result?.user.displayName,
+              // eslint-disable-next-line @typescript-eslint/dot-notation
+              username: JSON.parse(JSON.stringify(result))['_tokenResponse']?.screenName,
+              score: 0,
+            };
+            const userSecret = {
+              secret: '',
+            };
+            const userScoreRef = doc(firestoreDB, 'score', result.user.uid);
+            const userSecretRef = doc(firestoreDB, 'userSecrets', result.user.uid);
+            getDoc(userScoreRef)
+              .then((docSnap) => {
+                if (!docSnap.exists()) {
+                  setDoc(userScoreRef, user);
+                }
+              })
+              .catch(() =>
+                toast("Score card wasn't created please login again", { icon: <FaceIdError /> }),
+              );
+            getDoc(userSecretRef)
+              .then((docSnap) => {
+                if (!docSnap.exists()) {
+                  setDoc(userSecretRef, userSecret);
+                }
+              })
+              .catch(() =>
+                toast('Elon Musk is making some changes!!! Try again later', {
+                  icon: <FaceIdError />,
+                }),
+              );
+            const credential = TwitterAuthProvider.credentialFromResult(result);
+            setOAuthCredential(credential);
+            sessionStorage.setItem('oauth_credential', JSON.stringify(credential));
+          }
+        })
+        .catch(() => {
+          toast('Twitter messed up!! try logging in again', { icon: <FaceIdError /> });
+        });
     }
   };
-
-  useEffect(() => {
-    setNavOptions([
-      {
-        name: 'About',
-        link: '/about',
-        icon: BrandTwitter,
-        active: window.location.pathname === '/about',
-      },
-    ]);
-  }, [navigate]);
 
   const setCurrentNav = (clickedNav: string) => {
     setNavOptions(
@@ -119,12 +163,18 @@ function Navigation({ session, setSession, setOAuthCredential }: Props) {
           }top-0 z-40`}
         >
           <div>
-            <img src={logo} alt="logo" style={{ width: '50px' }} />
+            <Link to="/" onClick={() => setCurrentNav('home')}>
+              <img src={logo} alt="logo" style={{ width: '50px' }} />
+            </Link>
           </div>
           {show ? (
             ''
           ) : (
-            <h2 className="text-base text-gray-700 font-bold leading-normal">Who's The Tweet-er</h2>
+            <Link to="/" onClick={() => setCurrentNav('home')}>
+              <h2 className="text-base text-gray-700 font-bold leading-normal">
+                Who's The Tweet-er
+              </h2>
+            </Link>
           )}
           <div className="flex items-center">
             <div id="menu" className="text-gray-800" onClick={() => setShow(!show)}>
@@ -148,10 +198,26 @@ function Navigation({ session, setSession, setOAuthCredential }: Props) {
                   <div className="mt-6 flex w-full items-center justify-between">
                     <div className="flex items-center justify-between w-full">
                       <div className="flex items-center">
-                        <img src={logo} alt="logo" style={{ width: '50px' }} />
-                        <h2 className="text-base text-gray-700 font-bold leading-normal ml-3">
-                          Who's The Tweet-er
-                        </h2>
+                        <Link
+                          to="/"
+                          onClick={() => {
+                            setCurrentNav('home');
+                            setShow(!show);
+                          }}
+                        >
+                          <img src={logo} alt="logo" style={{ width: '50px' }} />
+                        </Link>
+                        <Link
+                          to="/"
+                          onClick={() => {
+                            setCurrentNav('home');
+                            setShow(!show);
+                          }}
+                        >
+                          <h2 className="text-base text-gray-700 font-bold leading-normal ml-3">
+                            Who's The Tweet-er
+                          </h2>
+                        </Link>
                       </div>
                       <div id="cross" className="text-gray-800" onClick={() => setShow(!show)}>
                         <X strokeWidth={1.5} />

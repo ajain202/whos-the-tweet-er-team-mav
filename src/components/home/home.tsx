@@ -185,7 +185,7 @@ function Home({ oAuthCredential, session }: Props) {
             )}
           </div>
         ) : (
-          <div className="flex flex-col items-center">Please login</div>
+          <div className="flex flex-col items-center">Please signin with your Twitter account </div>
         )}
       </div>
       <div className="p-2 md:col-span-2 h-auto md:overflow-y-auto custom-scrollbar">
