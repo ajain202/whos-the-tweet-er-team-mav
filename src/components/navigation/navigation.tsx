@@ -32,6 +32,17 @@ function Navigation({ session, setSession, setOAuthCredential }: Props) {
   const [show, setShow] = useState<boolean>(false);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    setNavOptions([
+      {
+        name: 'About',
+        link: '/about',
+        icon: BrandTwitter,
+        active: window.location.pathname === '/about',
+      },
+    ]);
+  }, [navigate]);
+
   const authHandler = () => {
     if (session) {
       signOut(firebaseAuth)
@@ -95,17 +106,6 @@ function Navigation({ session, setSession, setOAuthCredential }: Props) {
     }
   };
 
-  useEffect(() => {
-    setNavOptions([
-      {
-        name: 'About',
-        link: '/about',
-        icon: BrandTwitter,
-        active: window.location.pathname === '/about',
-      },
-    ]);
-  }, [navigate]);
-
   const setCurrentNav = (clickedNav: string) => {
     setNavOptions(
       navOptions.map((nav) => {
@@ -163,12 +163,18 @@ function Navigation({ session, setSession, setOAuthCredential }: Props) {
           }top-0 z-40`}
         >
           <div>
-            <img src={logo} alt="logo" style={{ width: '50px' }} />
+            <Link to="/" onClick={() => setCurrentNav('home')}>
+              <img src={logo} alt="logo" style={{ width: '50px' }} />
+            </Link>
           </div>
           {show ? (
             ''
           ) : (
-            <h2 className="text-base text-gray-700 font-bold leading-normal">Who's The Tweet-er</h2>
+            <Link to="/" onClick={() => setCurrentNav('home')}>
+              <h2 className="text-base text-gray-700 font-bold leading-normal">
+                Who's The Tweet-er
+              </h2>
+            </Link>
           )}
           <div className="flex items-center">
             <div id="menu" className="text-gray-800" onClick={() => setShow(!show)}>
@@ -192,10 +198,26 @@ function Navigation({ session, setSession, setOAuthCredential }: Props) {
                   <div className="mt-6 flex w-full items-center justify-between">
                     <div className="flex items-center justify-between w-full">
                       <div className="flex items-center">
-                        <img src={logo} alt="logo" style={{ width: '50px' }} />
-                        <h2 className="text-base text-gray-700 font-bold leading-normal ml-3">
-                          Who's The Tweet-er
-                        </h2>
+                        <Link
+                          to="/"
+                          onClick={() => {
+                            setCurrentNav('home');
+                            setShow(!show);
+                          }}
+                        >
+                          <img src={logo} alt="logo" style={{ width: '50px' }} />
+                        </Link>
+                        <Link
+                          to="/"
+                          onClick={() => {
+                            setCurrentNav('home');
+                            setShow(!show);
+                          }}
+                        >
+                          <h2 className="text-base text-gray-700 font-bold leading-normal ml-3">
+                            Who's The Tweet-er
+                          </h2>
+                        </Link>
                       </div>
                       <div id="cross" className="text-gray-800" onClick={() => setShow(!show)}>
                         <X strokeWidth={1.5} />
