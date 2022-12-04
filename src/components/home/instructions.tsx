@@ -2,7 +2,7 @@ function Instructions() {
   return (
     <div className="p-6 bg-[#f1f2f2] border border-gray-200 rounded-lg shadow-md">
       <h2 className="font-semibold text-lg mb-2">Instructions:</h2>
-      <ul className="ml-5 space-y-1 w-full list-disc text-gray-600">
+      <ul className="ml-5 space-y-1 list-disc text-gray-600">
         <li>Welcome to Who's the Tweeter</li>
 
         <li>

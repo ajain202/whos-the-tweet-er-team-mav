@@ -1,20 +1,12 @@
-import {
-  getRedirectResult,
-  OAuthCredential,
-  onAuthStateChanged,
-  TwitterAuthProvider,
-  User,
-} from 'firebase/auth';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { OAuthCredential, onAuthStateChanged, User } from 'firebase/auth';
 import { useEffect, useState } from 'react';
+import { Toaster } from 'react-hot-toast';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import toast, { Toaster } from 'react-hot-toast';
-import { FaceIdError } from 'tabler-icons-react';
 import './App.css';
 import About from './components/about/about';
 import Home from './components/home/home';
 import Navigation from './components/navigation/navigation';
-import { firebaseAuth, firestoreDB } from './firebase/firebase-client';
+import { firebaseAuth } from './firebase/firebase-client';
 
 function App() {
   const [session, setSession] = useState<User | null>(null);
@@ -25,51 +17,6 @@ function App() {
     if (oAuthCredFromStorage) {
       setOAuthCredential(JSON.parse(oAuthCredFromStorage));
     }
-
-    getRedirectResult(firebaseAuth)
-      .then((result) => {
-        // This gives you a the Twitter OAuth 1.0 Access Token and Secret.
-        // You can use these server side with your app's credentials to access the Twitter API.
-        if (result) {
-          const user = {
-            name: result?.user.displayName,
-            // eslint-disable-next-line @typescript-eslint/dot-notation
-            username: JSON.parse(JSON.stringify(result))['_tokenResponse']?.screenName,
-            score: 0,
-          };
-          const userSecret = {
-            secret: '',
-          };
-          const userScoreRef = doc(firestoreDB, 'score', result.user.uid);
-          const userSecretRef = doc(firestoreDB, 'userSecrets', result.user.uid);
-          getDoc(userScoreRef)
-            .then((docSnap) => {
-              if (!docSnap.exists()) {
-                setDoc(userScoreRef, user);
-              }
-            })
-            .catch(() =>
-              toast("Score card wasn't created please login again", { icon: <FaceIdError /> }),
-            );
-          getDoc(userSecretRef)
-            .then((docSnap) => {
-              if (!docSnap.exists()) {
-                setDoc(userSecretRef, userSecret);
-              }
-            })
-            .catch(() =>
-              toast('Elon Musk is making some changes!!! Try again later', {
-                icon: <FaceIdError />,
-              }),
-            );
-          const credential = TwitterAuthProvider.credentialFromResult(result);
-          setOAuthCredential(credential);
-          sessionStorage.setItem('oauth_credential', JSON.stringify(credential));
-        }
-      })
-      .catch(() => {
-        toast('Twitter messed up!! try logging in again', { icon: <FaceIdError /> });
-      });
 
     onAuthStateChanged(firebaseAuth, (user) => {
       setSession(user);
